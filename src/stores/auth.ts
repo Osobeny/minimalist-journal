@@ -1,7 +1,8 @@
 import { AppRouter } from "@/server";
 import { InferRouterOutputs } from "jstack";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, StorageValue } from "zustand/middleware";
+import superjson from "superjson";
 
 type Session = InferRouterOutputs<AppRouter>["auth"]["login"]["session"];
 
@@ -23,6 +24,19 @@ export const useAuthStore = create<AuthStore>()(
 				return session.expiresAt > new Date();
 			},
 		}),
-		{ name: "session" }
+		{
+			name: "session",
+			storage: {
+				getItem: (name) => {
+					const value = localStorage.getItem(name);
+					if (!value) return null;
+					return superjson.parse(value) as StorageValue<AuthStore>;
+				},
+				setItem: (name, value) => {
+					localStorage.setItem(name, superjson.stringify(value));
+				},
+				removeItem: (name) => localStorage.removeItem(name),
+			},
+		}
 	)
 );

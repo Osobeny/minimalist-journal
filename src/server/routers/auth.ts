@@ -93,8 +93,6 @@ export const authRouter = j.router({
 
 		await db.delete(sessions).where(eq(sessions.id, session.id));
 		deleteCookie(c, "session_id");
-
-		return c.superjson({ success: true });
 	}),
 	changePassword: privateProcedure
 		.input(

@@ -50,7 +50,7 @@
   --destructive: hsl(0 62.8% 30.6%);
   --destructive-foreground: hsl(60 9.1% 97.8%);
   --border: hsl(12 6.5% 15.1%);
-  --input: hsl(12 6.5% 15.1%);
+  --input: hsl(16, 7%, 32%);
   --ring: hsl(24 5.7% 82.9%);
   --chart-1: hsl(220 70% 50%);
   --chart-2: hsl(160 60% 45%);

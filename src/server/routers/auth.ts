@@ -22,7 +22,7 @@ export const authRouter = j.router({
 		.input(
 			z.object({
 				email: z.string().email(),
-				password: z.string().min(8).max(255),
+				password: z.string().min(8).max(100),
 			})
 		)
 		.mutation(async ({ ctx, c, input }) => {
@@ -48,7 +48,7 @@ export const authRouter = j.router({
 		.input(
 			z.object({
 				email: z.string().email(),
-				password: z.string().min(8).max(255),
+				password: z.string().min(8).max(100),
 			})
 		)
 		.mutation(async ({ ctx, c, input }) => {

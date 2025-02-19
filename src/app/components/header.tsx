@@ -7,9 +7,9 @@ import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 
 const Header = () => {
-	const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 	const setSession = useAuthStore((state) => state.setSession);
-	const signedIn = isAuthenticated();
+	const session = useAuthStore((state) => state.session);
+	const signedIn = session && session.expiresAt > new Date();
 
 	const { mutate: logout, isPending } = useMutation({
 		mutationFn: async () => {

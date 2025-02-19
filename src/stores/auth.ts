@@ -9,20 +9,13 @@ type Session = InferRouterOutputs<AppRouter>["auth"]["login"]["session"];
 interface AuthStore {
 	session: Session | null;
 	setSession: (session: Session | null) => void;
-	isAuthenticated: () => boolean;
 }
 
 export const useAuthStore = create<AuthStore>()(
 	persist(
-		(set, get) => ({
+		(set) => ({
 			session: null,
 			setSession: (session) => set({ session }),
-			isAuthenticated: () => {
-				const { session } = get();
-				if (!session) return false;
-
-				return session.expiresAt > new Date();
-			},
 		}),
 		{
 			name: "session",

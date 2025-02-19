@@ -5,7 +5,8 @@ import { useAuthStore } from "@/stores/auth";
 import Link from "next/link";
 
 export default function Home() {
-	const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+	const session = useAuthStore((state) => state.session);
+	const signedIn = session && session.expiresAt > new Date();
 
 	return (
 		<>
@@ -29,7 +30,7 @@ export default function Home() {
 						</span>
 					</p>
 
-					{!isAuthenticated() && (
+					{!signedIn && (
 						<Link
 							href="/login"
 							className="px-6 py-2 text-lg font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 transition max-w-32 w-full text-center"

@@ -13,8 +13,7 @@ const Header = () => {
 
 	const { mutate: logout, isPending } = useMutation({
 		mutationFn: async () => {
-			const res = await client.auth.logout.$post();
-			return res.ok;
+			return await client.auth.logout.$post();
 		},
 		onSuccess: async () => setSession(null),
 	});

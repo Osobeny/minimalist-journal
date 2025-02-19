@@ -3,9 +3,8 @@ import { z } from "zod";
 import { lower, sessions, users } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { deleteCookie, setCookie } from "hono/cookie";
-import { hash, verify } from "@node-rs/argon2";
 import { HTTPException } from "hono/http-exception";
-import { argonOptions, SESSION_EXPIRES_IN_MS } from "../constants";
+import bcrypt from "bcryptjs";
 
 export const authRouter = j.router({
 	me: privateProcedure.query(async ({ ctx, c }) => {
@@ -38,7 +37,8 @@ export const authRouter = j.router({
 				throw new HTTPException(400, { message: "User already exists" });
 			}
 
-			const hashedPassword = await hash(password, argonOptions);
+			const salt = await bcrypt.genSalt();
+			const hashedPassword = await bcrypt.hash(password, salt);
 			await db.insert(users).values({
 				email,
 				passwordHash: hashedPassword,
@@ -63,7 +63,10 @@ export const authRouter = j.router({
 				throw new HTTPException(400, { message: "Invalid email or password" });
 			}
 
-			const isPasswordCorrect = await verify(user.passwordHash, password);
+			const isPasswordCorrect = await bcrypt.compare(
+				password,
+				user.passwordHash
+			);
 			if (!isPasswordCorrect) {
 				throw new HTTPException(400, { message: "Invalid email or password" });
 			}
@@ -72,7 +75,7 @@ export const authRouter = j.router({
 				.insert(sessions)
 				.values({
 					userId: user.id,
-					expiresAt: new Date(Date.now() + SESSION_EXPIRES_IN_MS),
+					expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 1 week
 				})
 				.returning();
 
@@ -82,6 +85,8 @@ export const authRouter = j.router({
 				sameSite: "lax",
 				expires: session!.expiresAt,
 			});
+
+			return c.superjson({ session: session! });
 		}),
 	logout: privateProcedure.mutation(async ({ ctx, c }) => {
 		const { db, session } = ctx;
@@ -102,12 +107,16 @@ export const authRouter = j.router({
 			const { oldPassword, newPassword } = input;
 			const { db, user } = ctx;
 
-			const isPasswordCorrect = await verify(user.passwordHash, oldPassword);
+			const isPasswordCorrect = await bcrypt.compare(
+				oldPassword,
+				user.passwordHash
+			);
 			if (!isPasswordCorrect) {
 				throw new HTTPException(400, { message: "Invalid password" });
 			}
 
-			const passwordHash = await hash(newPassword, argonOptions);
+			const salt = await bcrypt.genSalt();
+			const passwordHash = await bcrypt.hash(newPassword, salt);
 			await db.update(users).set({ passwordHash }).where(eq(users.id, user.id));
 
 			return c.superjson({ success: true });

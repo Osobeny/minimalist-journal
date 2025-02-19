@@ -13,10 +13,11 @@
     "start": "next start"
   },
   "dependencies": {
-    "@node-rs/argon2": "^2.0.2",
+    "@noble/hashes": "^1.7.1",
     "@radix-ui/react-slot": "^1.1.2",
     "@tailwindcss/postcss": "^4.0.0",
     "@tanstack/react-query": "^5.51.23",
+    "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.39.0",
@@ -31,7 +32,8 @@
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "wrangler": "^3.72.0",
-    "zod": "^3.24.1"
+    "zod": "^3.24.1",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240815.0",

@@ -1,12 +1,24 @@
-import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, index, uuid } from "drizzle-orm/pg-core";
+import { relations, SQL, sql } from "drizzle-orm";
+import {
+	pgTable,
+	text,
+	timestamp,
+	index,
+	uuid,
+	AnyPgColumn,
+	uniqueIndex,
+} from "drizzle-orm/pg-core";
 
-export const users = pgTable("users", {
-	id: uuid("id").defaultRandom().primaryKey(),
-	email: text("email").notNull().unique(),
-	passwordHash: text("password_hash").notNull(),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+export const users = pgTable(
+	"users",
+	{
+		id: uuid("id").defaultRandom().primaryKey(),
+		email: text("email").notNull(),
+		passwordHash: text("password_hash").notNull(),
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+	},
+	(table) => [uniqueIndex("email_unique_idx").on(lower(table.email))]
+);
 
 export const sessions = pgTable("sessions", {
 	id: uuid("id").defaultRandom().primaryKey(),
@@ -49,3 +61,7 @@ export const notesRelations = relations(notes, ({ one }) => ({
 		references: [users.id],
 	}),
 }));
+
+export function lower(email: AnyPgColumn): SQL {
+	return sql`lower(${email})`;
+}

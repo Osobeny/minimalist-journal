@@ -48,7 +48,7 @@ export const notesRouter = j.router({
 				})
 				.returning();
 
-			return c.superjson(note);
+			return c.superjson({ note });
 		}),
 	update: privateProcedure
 		.input(
@@ -67,7 +67,7 @@ export const notesRouter = j.router({
 				.where(and(eq(schema.notes.id, id), eq(schema.notes.userId, user.id)))
 				.returning();
 
-			return c.superjson(note);
+			return c.superjson({ note });
 		}),
 	delete: privateProcedure
 		.input(z.object({ id: z.string().uuid() }))

@@ -51,8 +51,7 @@ export default function Register() {
 
 	const { mutate: register, isPending } = useMutation({
 		mutationFn: async ({ email, password }: z.infer<typeof formSchema>) => {
-			const res = await client.auth.register.$post({ email, password });
-			return await res.json();
+			return await client.auth.register.$post({ email, password });
 		},
 		onSuccess: async () => {
 			router.push("/login");

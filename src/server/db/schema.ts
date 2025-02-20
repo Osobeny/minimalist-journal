@@ -38,7 +38,7 @@ export const notes = pgTable(
 			.references(() => users.id, { onDelete: "cascade" }),
 		content: text("content").notNull(),
 		createdAt: timestamp("created_at").defaultNow().notNull(),
-		updatedAt: timestamp("updated_at").defaultNow().notNull(),
+		updatedAt: timestamp("updated_at"),
 	},
 	(table) => [index("content_idx").on(table.content)]
 );

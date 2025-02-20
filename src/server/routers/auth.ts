@@ -86,7 +86,12 @@ export const authRouter = j.router({
 				expires: session!.expiresAt,
 			});
 
-			return c.superjson({ session: session! });
+			return c.superjson({
+				session: {
+					expiresAt: session!.expiresAt,
+					createdAt: session!.createdAt,
+				},
+			});
 		}),
 	logout: privateProcedure.mutation(async ({ ctx, c }) => {
 		const { db, session } = ctx;
@@ -116,7 +121,5 @@ export const authRouter = j.router({
 			const salt = await bcrypt.genSalt();
 			const passwordHash = await bcrypt.hash(newPassword, salt);
 			await db.update(users).set({ passwordHash }).where(eq(users.id, user.id));
-
-			return c.superjson({ success: true });
 		}),
 });

@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-query";
 import { HTTPException } from "hono/http-exception";
 import { PropsWithChildren, useState } from "react";
+import { toast } from "sonner";
 
 export const Providers = ({ children }: PropsWithChildren) => {
 	const setSession = useAuthStore((state) => state.setSession);
@@ -19,14 +20,16 @@ export const Providers = ({ children }: PropsWithChildren) => {
 				queryCache: new QueryCache({
 					onError: (err) => {
 						if (err instanceof HTTPException) {
+							toast("Error", { description: err.message });
 							// global error handling, e.g. toast notification ...
 						}
 					},
 				}),
 				mutationCache: new MutationCache({
 					onError: (err) => {
-						if (err instanceof HTTPException && err.status === 401) {
-							setSession(null);
+						if (err instanceof HTTPException) {
+							if (err.status === 401) setSession(null);
+							toast("Error", { description: err.message });
 						}
 					},
 				}),

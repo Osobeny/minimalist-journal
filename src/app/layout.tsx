@@ -3,6 +3,7 @@ import { Providers } from "./components/providers";
 import Header from "./components/header";
 import Footer from "./components/footer";
 import "./globals.css";
+import { Toaster } from "./components/ui/sonner";
 
 export const metadata: Metadata = {
 	title: "Minimalist Journal",
@@ -24,6 +25,7 @@ export default function RootLayout({
 						<Header />
 						{children}
 						<Footer />
+						<Toaster />
 					</Providers>
 				</div>
 			</body>

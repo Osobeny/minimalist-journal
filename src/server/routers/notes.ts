@@ -30,7 +30,7 @@ export const notesRouter = j.router({
 
 			return c.superjson({
 				notes,
-				totalPages: Math.ceil(totalNotes / pageSize),
+				totalNotes,
 				currentPage: page,
 			});
 		}),
@@ -63,7 +63,7 @@ export const notesRouter = j.router({
 
 			const note = await db
 				.update(schema.notes)
-				.set({ content })
+				.set({ content, updatedAt: new Date() })
 				.where(and(eq(schema.notes.id, id), eq(schema.notes.userId, user.id)))
 				.returning();
 
@@ -112,7 +112,7 @@ export const notesRouter = j.router({
 
 			return c.superjson({
 				notes,
-				totalPages: Math.ceil(totalNotes / pageSize),
+				totalNotes,
 				currentPage: page,
 			});
 		}),
